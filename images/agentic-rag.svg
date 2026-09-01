@@ -1,47 +1,125 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" role="img" aria-label="A question is retrieved against indexed documents, answered by an agent, and returned as a cited answer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1700 650" role="img" aria-label="Pipeline diagram: a question plus per-user memory passes through jailbreak, scope, and clarify guardrails, then a planner and router that fan out to parallel sub-agents or a single agent, into a synthesizer, a grounding check, optional web-search escalation on weak coverage, and a final cited answer that is saved back to per-user memory">
   <defs>
-    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0,0 L10,5 L0,10 z" fill="#8A8F9A"/>
+    <marker id="arrowGrey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#6b7280"/>
+    </marker>
+    <marker id="arrowAmber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#c9922a"/>
+    </marker>
+    <marker id="arrowMuted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#9aa0ac"/>
     </marker>
   </defs>
 
-  <!-- documents (corpus) -->
-  <g stroke="#C7CBD4" stroke-width="2.5" fill="none">
-    <rect x="55" y="90" width="120" height="150" rx="10" fill="#252D38"/>
-    <rect x="72" y="74" width="120" height="150" rx="10" fill="#2B3542"/>
-    <rect x="90" y="58" width="120" height="150" rx="10" fill="#333F4E"/>
-  </g>
-  <g stroke="#C7CBD4" stroke-width="3" stroke-linecap="round">
-    <line x1="112" y1="90" x2="188" y2="90"/>
-    <line x1="112" y1="112" x2="178" y2="112"/>
-    <line x1="112" y1="134" x2="188" y2="134"/>
-    <line x1="112" y1="156" x2="160" y2="156"/>
-  </g>
-  <text x="150" y="278" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#9AA0AC">corpus</text>
+  <style>
+    .box { fill:#ffffff; stroke:#d7dbe2; stroke-width:1.6; }
+    .boxAccent { fill:#eef8fd; stroke:#18bfef; stroke-width:1.8; }
+    .boxAmber { fill:#fff8ec; stroke:#c9922a; stroke-width:1.6; }
+    .title { font-family: Arial, Helvetica, sans-serif; font-size:16px; font-weight:700; fill:#212931; text-anchor:middle; }
+    .sub { font-family: Arial, Helvetica, sans-serif; font-size:12.5px; fill:#5b6272; text-anchor:middle; }
+    .flowLine { stroke:#6b7280; stroke-width:2.5; fill:none; }
+    .escLine { stroke:#c9922a; stroke-width:2.25; fill:none; stroke-dasharray:6,5; }
+    .memLine { stroke:#9aa0ac; stroke-width:2; fill:none; stroke-dasharray:3,5; }
+    .caption { font-family: Arial, Helvetica, sans-serif; font-size:12px; fill:#7b828d; }
+    .legend { font-family: Arial, Helvetica, sans-serif; font-size:12.5px; fill:#5b6272; }
+  </style>
 
-  <line x1="235" y1="150" x2="330" y2="150" stroke="#8A8F9A" stroke-width="3" marker-end="url(#arr)"/>
+  <!-- background -->
+  <rect x="0" y="0" width="1700" height="650" fill="#ffffff"/>
 
-  <!-- agent -->
-  <circle cx="400" cy="150" r="70" fill="none" stroke="#7C93FF" stroke-width="4"/>
-  <circle cx="400" cy="120" r="9" fill="#7C93FF"/>
-  <circle cx="368" cy="168" r="9" fill="#7C93FF"/>
-  <circle cx="432" cy="168" r="9" fill="#7C93FF"/>
-  <line x1="400" y1="120" x2="368" y2="168" stroke="#7C93FF" stroke-width="2.5"/>
-  <line x1="400" y1="120" x2="432" y2="168" stroke="#7C93FF" stroke-width="2.5"/>
-  <line x1="368" y1="168" x2="432" y2="168" stroke="#7C93FF" stroke-width="2.5"/>
-  <text x="400" y="278" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#9AA0AC">agent</text>
+  <!-- ============ MAIN ROW ============ -->
+  <!-- A: Question + memory -->
+  <rect class="boxAccent" x="30" y="60" width="170" height="80" rx="12"/>
+  <text class="title" x="115" y="94">User Question</text>
+  <text class="sub" x="115" y="114">+ per-user memory</text>
 
-  <line x1="470" y1="150" x2="565" y2="150" stroke="#8A8F9A" stroke-width="3" marker-end="url(#arr)"/>
+  <!-- B: Guardrails -->
+  <rect class="box" x="230" y="60" width="190" height="80" rx="12"/>
+  <text class="title" x="325" y="94">Guardrails</text>
+  <text class="sub" x="325" y="114">jailbreak · scope · clarify</text>
 
-  <!-- cited answer -->
-  <path d="M600,90 h150 a12,12 0 0 1 12,12 v90 a12,12 0 0 1 -12,12 h-95 l-25,28 v-28 h-30 a12,12 0 0 1 -12,-12 v-90 a12,12 0 0 1 12,-12 z"
-        fill="#2B3542" stroke="#C7CBD4" stroke-width="2.5"/>
-  <g stroke="#C7CBD4" stroke-width="3" stroke-linecap="round">
-    <line x1="622" y1="122" x2="738" y2="122"/>
-    <line x1="622" y1="144" x2="710" y2="144"/>
-    <line x1="622" y1="166" x2="726" y2="166"/>
-  </g>
-  <text x="700" y="140" font-family="Arial, sans-serif" font-size="14" fill="#E0B84A" font-weight="700">[1]</text>
-  <text x="700" y="184" font-family="Arial, sans-serif" font-size="14" fill="#E0B84A" font-weight="700">[2]</text>
-  <text x="675" y="278" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#9AA0AC">cited answer</text>
+  <!-- C: Planner -->
+  <rect class="box" x="450" y="60" width="140" height="80" rx="12"/>
+  <text class="title" x="520" y="106">Planner</text>
+
+  <!-- D: Router -->
+  <rect class="box" x="630" y="60" width="140" height="80" rx="12"/>
+  <text class="title" x="700" y="106">Router</text>
+
+  <!-- main flow arrows -->
+  <line class="flowLine" x1="200" y1="100" x2="222" y2="100" marker-end="url(#arrowGrey)"/>
+  <line class="flowLine" x1="420" y1="100" x2="442" y2="100" marker-end="url(#arrowGrey)"/>
+  <line class="flowLine" x1="590" y1="100" x2="622" y2="100" marker-end="url(#arrowGrey)"/>
+
+  <!-- ============ GUARDRAIL SHORT-CIRCUIT ============ -->
+  <rect class="boxAmber" x="230" y="220" width="190" height="90" rx="12"/>
+  <text class="title" x="325" y="250" fill="#212931">Blocked /</text>
+  <text class="title" x="325" y="270" fill="#212931">Clarifying Question</text>
+  <text class="sub" x="325" y="290">returned directly, no retrieval</text>
+  <path class="escLine" d="M325,140 L325,212" marker-end="url(#arrowAmber)"/>
+  <text class="caption" x="435" y="185">jailbreak, off-topic,</text>
+  <text class="caption" x="435" y="200">sensitive, or too vague</text>
+
+  <!-- ============ ROUTER FORK ============ -->
+  <!-- fork stem -->
+  <path class="flowLine" d="M770,100 H810" />
+  <path class="flowLine" d="M810,220 V380" />
+  <path class="flowLine" d="M810,220 H842" marker-end="url(#arrowGrey)"/>
+  <path class="flowLine" d="M810,380 H842" marker-end="url(#arrowGrey)"/>
+
+  <!-- E: parallel fan-out -->
+  <rect class="box" x="850" y="180" width="190" height="80" rx="12"/>
+  <text class="title" x="945" y="214">Parallel Fan-out</text>
+  <text class="sub" x="945" y="234">multi-topic questions</text>
+
+  <!-- F: single agent -->
+  <rect class="box" x="850" y="340" width="190" height="80" rx="12"/>
+  <text class="title" x="945" y="374">Single Agent</text>
+  <text class="sub" x="945" y="394">single-topic, pooled retrieval</text>
+
+  <!-- merge into synthesizer -->
+  <path class="flowLine" d="M1040,220 H1070" />
+  <path class="flowLine" d="M1040,380 H1070" />
+  <path class="flowLine" d="M1070,220 V380" />
+  <path class="flowLine" d="M1070,300 H1082" marker-end="url(#arrowGrey)"/>
+
+  <!-- G: synthesizer -->
+  <rect class="box" x="1090" y="260" width="150" height="80" rx="12"/>
+  <text class="title" x="1165" y="306">Synthesizer</text>
+
+  <!-- H: grounding check -->
+  <line class="flowLine" x1="1240" y1="300" x2="1282" y2="300" marker-end="url(#arrowGrey)"/>
+  <rect class="box" x="1290" y="260" width="170" height="80" rx="12"/>
+  <text class="title" x="1375" y="296">Grounding</text>
+  <text class="title" x="1375" y="316">Check</text>
+
+  <!-- H -> J default path -->
+  <line class="flowLine" x1="1460" y1="300" x2="1502" y2="300" marker-end="url(#arrowGrey)"/>
+
+  <!-- J: cited answer -->
+  <rect class="boxAccent" x="1510" y="260" width="170" height="80" rx="12"/>
+  <text class="title" x="1595" y="296">Cited Answer</text>
+  <text class="sub" x="1595" y="316">[1] [2]</text>
+
+  <!-- ============ WEB SEARCH ESCALATION ============ -->
+  <path class="escLine" d="M1375,340 L1375,412" marker-end="url(#arrowAmber)"/>
+  <text class="caption" x="1465" y="368">weak corpus</text>
+  <text class="caption" x="1465" y="382">coverage</text>
+  <rect class="boxAmber" x="1290" y="420" width="170" height="90" rx="12"/>
+  <text class="title" x="1375" y="452" fill="#212931">Web Search</text>
+  <text class="sub" x="1375" y="472">Tavily escalation</text>
+  <text class="sub" x="1375" y="489">re-answer with web cites</text>
+  <path class="escLine" d="M1460,465 H1595 V340" marker-end="url(#arrowAmber)"/>
+
+  <!-- ============ MEMORY LOOP ============ -->
+  <path class="memLine" d="M1595,340 V575 L115,575 V148" marker-end="url(#arrowMuted)"/>
+  <text class="legend" x="855" y="565" text-anchor="middle">saved to per-user conversation history — informs the next turn's guardrails and contextualizer</text>
+
+  <!-- ============ LEGEND ============ -->
+  <line x1="30" y1="608" x2="66" y2="608" class="flowLine"/>
+  <text class="legend" x="74" y="612">normal flow</text>
+  <line x1="190" y1="608" x2="226" y2="608" class="escLine"/>
+  <text class="legend" x="234" y="612">short-circuit / escalation</text>
+  <line x1="430" y1="608" x2="466" y2="608" class="memLine"/>
+  <text class="legend" x="474" y="612">per-user memory</text>
 </svg>
